@@ -5,17 +5,26 @@ import com.example.membership.dto.UserMemberships;
 import com.example.membership.dto.Users;
 import com.example.membership.service.MembershipService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Optional;
 
+@Slf4j
 @Controller
-@RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000") // Next 요청 허용
 public class MembershipController {
 
     private MembershipService membershipService;
+
+    @Autowired
+    public MembershipController(MembershipService membershipService) {
+        this.membershipService = membershipService;
+    }
 
     @PostMapping("/api/memberships/register")
     public void registerUser(Users userDto, Memberships membershipDto) {

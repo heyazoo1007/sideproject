@@ -5,15 +5,20 @@ import com.example.membership.dto.UserMemberships;
 import com.example.membership.dto.Users;
 import com.example.membership.repository.MembershipRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class MembershipService {
 
     private MembershipRepository membershipRepository;
+
+    @Autowired
+    public MembershipService(MembershipRepository membershipRepository) {
+        this.membershipRepository = membershipRepository;
+    }
 
     public void registerUser(Users userDto, Memberships membershipDto) {
 
@@ -27,9 +32,11 @@ public class MembershipService {
 
         // 2. 멤버십 인원 마감전인지
         Optional<Memberships> membership = membershipRepository.getMembershipsByMembershipId(membershipDto.getMembershipId());
-        if (membership.get().getTotalLimit() < membership.get().getCurrentCount()) {
-            // membership is out of occupation.
-            return;
+        if (membership.isPresent()) {
+            if (membership.get().getTotalLimit() < membership.get().getCurrentCount()) {
+                // membership is out of occupation.
+                return;
+            }
         }
 
         // 3. 멤버십 증가
